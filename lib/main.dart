@@ -9,6 +9,9 @@ import 'chat.dart' as chatScreen;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+ // const supabaseOpsUrl = 'https://bcbxwsheuxulwatfpwmh.supabase.co';
+  //const supabaseKey =
+
 
   await Supabase.initialize(
     url: 'https://dpurcsaehzohnppjzlxz.supabase.co',
@@ -76,14 +79,14 @@ class _HomePageState extends State<HomePage> {
             backgroundColor: upload ? Colors.blueGrey : Colors.blueGrey,
             onPressed: () {
               updateUpload(upload ? false : true);
-            }, 
+            },
             child: upload
                 ? Icon(Icons.cancel_outlined, size: 40)
                 : Icon(
                     Icons.add,
                     size: 40,
                     color: Colors.white,
-                  ), 
+                  ),
           ),
         ),
       ),*/

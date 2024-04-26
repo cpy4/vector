@@ -1,3 +1,47 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+part 'db.g.dart';
+
+final supabase = Supabase.instance.client;
+
+@riverpod
+Future secret(secretName, ref) async {
+  var res = await supabase
+      .schema('vault')
+      .from('decrypted_secrets')
+      .select('decrypted_secret')
+      .match({'name': secretName});
+  return res[0]['decrypted_secret'];
+}
+
+@riverpod
+Future<List> docs(ref) async {
+  List res = await supabase
+      .schema('public')
+      .from('vdocuments')
+      .select('name');
+  return res;
+}
+
+@riverpod
+Future<String> supabaseCreds(ref) async {
+  await dotenv.load(fileName: ".env");
+  final supabaseURL = await dotenv.env['SUPABASE_OPS_URL'].toString();
+  final supabaseKey = await dotenv.env['SUPABASE_OPS_KEY'].toString();
+  final map = {
+    'url': supabaseURL,
+    'key': supabaseKey
+  };
+  return supabaseURL;
+}
+
+
+
+
+
 /*import 'package:realm/realm.dart';
 import 'sidebar.dart';
 

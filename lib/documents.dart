@@ -6,9 +6,12 @@ import 'package:file_picker/file_picker.dart';
 import 'dart:math' as math;
 import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vector/db.dart';
 
-class DocsScreen extends StatelessWidget {
+class DocsScreen extends ConsumerStatefulWidget {
   final void Function() callback;
+  //final SupabaseClient supabase;
   DocsScreen({
     Key? key,
     required this.controller,
@@ -16,8 +19,13 @@ class DocsScreen extends StatelessWidget {
   }) : super(key: key);
 
   final SidebarXController controller;
-  final _future = Supabase.instance.client.from('documents_vecs').select('''id''');
-  // File ? _pickedImage;
+
+  @override
+  ConsumerState<DocsScreen> createState() => _DocsScreenState();
+}
+
+class _DocsScreenState extends ConsumerState<DocsScreen> {
+  //final _future = supabase.from('documents_vecs').select('''id''');
   List<File>? files;
 
   Future<void> _onUploadPressed() async {
@@ -33,16 +41,18 @@ class DocsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+   //final supabaseClient = supabase;
+    final future = ref.watch(docsProvider.future);
     final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         AnimatedBuilder(
-          animation: controller,
+          animation: widget.controller,
           builder: (context, child) {
             return FutureBuilder(
-              future: _future,
+              future: future,
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return const Center(child: CircularProgressIndicator());
@@ -60,21 +70,22 @@ class DocsScreen extends StatelessWidget {
                       final math.Random random = math.Random(index);
                       final doc = documents[index];
                       return GridTile(
+                        footer: Text('hey'),
                         child: Container(
                           margin: const EdgeInsets.all(12.0),
                           decoration: ShapeDecoration(
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12.0),
                             ),
-                            gradient: const RadialGradient(
-                              colors: <Color>[Colors.blueGrey, Color.fromARGB(220, 96, 125, 139)],
+                            gradient: RadialGradient(
+                              colors: <Color>[Theme.of(context).scaffoldBackgroundColor, Theme.of(context).primaryColor],
                             ),
                           ),
                           child: const Center(
                               child: FaIcon(
                             FontAwesomeIcons.solidFileLines,
                             size: 120,
-                            color: Colors.white,
+                                color: Colors.white,
                           )),
                         ),
                         //Text(country['name']),
@@ -91,15 +102,13 @@ class DocsScreen extends StatelessWidget {
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
               minimumSize: const Size(200, 40),
-              backgroundColor: Color(0xFFff9800),
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               textStyle: theme.textTheme.labelLarge,
             ),
-            onPressed: callback,
+            onPressed: widget.callback,
             child: const Icon(
               Icons.add,
               size: 40,
-              color: Colors.white,
             ),
           ),
         )

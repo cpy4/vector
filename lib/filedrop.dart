@@ -1,50 +1,69 @@
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:flutter/material.dart';
-//import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:cross_file/cross_file.dart';
 import 'package:langchain/langchain.dart';
 import 'package:langchain_openai/langchain_openai.dart';
 import 'package:langchain_supabase/langchain_supabase.dart' as sbv;
 import 'package:flutter_gpt_tokenizer/flutter_gpt_tokenizer.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vector/db.dart';
+import 'package:langchain_community/langchain_community.dart';
 
-class DragTarget extends StatefulWidget {
-  // String supabaseUrl;
-  // String supabaseApiKey;
+class DragTarget extends ConsumerStatefulWidget {
   final void Function() uploadCallback;
   const DragTarget({
     Key? key,
     required this.uploadCallback,
-    //required this.supabaseUrl,
-    //required this.supabaseApiKey,
   }) : super(key: key);
 
   @override
   DragTargetState createState() => DragTargetState();
 }
 
-class DragTargetState extends State<DragTarget> {
+class DragTargetState extends ConsumerState<DragTarget> {
   final List<XFile> _list = [];
   DragTargetState();
   bool _dragging = false;
-
   Offset? offset;
-
-  final llm = ChatOpenAI(apiKey: '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');
-
-  final embeddings = OpenAIEmbeddings(apiKey: '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');
-
   Future<int> countTokens(String text) async {
     final int tokenCount = await Tokenizer().count(text, modelName: 'gpt-4-*');
     return tokenCount;
   }
-
+  String supabaseURL;
+  String supabaseKey;
   void uploadCallbackFunc() {
     widget.uploadCallback();
   }
+Future<Map?> getCredsMap() async {
+  final supabaseCreds = await ref.watch(supabaseCredsProvider);
+  final map = await supabaseCreds.when(
+      data: (supabaseCreds) {
+        return supabaseCreds;
+      },
+      loading: () {},
+      error: (error, stackTrace){}
+  );
+  return map;
+}
 
   @override
   Widget build(BuildContext context) {
+   final openAIKey = ref.watch(secretProvider('OpenAIKey')).toString();
+   final supabaseCreds = ref.watch(supabaseCredsProvider);
+    /*final map = supabaseCreds.when(
+      data: (supabaseCreds) {
+       return supabaseCreds;
+      },
+      loading: () {},
+      error: (error, stackTrace){}
+    ); */
+    //String supabaseURL = supabaseCreds.valueOrNull.toString();
+  // String supabaseKey = map!['key'];
+   //print(supabaseKey);
+   print(supabaseURL);
+    final llm = ChatOpenAI(apiKey: openAIKey);
+    final embeddings = OpenAIEmbeddings(apiKey: openAIKey);
 
     final vectorStore = sbv.Supabase(
       tableName: 'documents_vecs',
@@ -114,7 +133,6 @@ class DragTargetState extends State<DragTarget> {
             width: 200,
             decoration: ShapeDecoration(
               shape: const CircleBorder(),
-              color: _dragging ? Colors.blueGrey.withOpacity(0.7) : Colors.blueGrey,
             ),
             //color: _dragging ? Colors.blue.withOpacity(0.4) : Colors.black26,
             child: Stack(
@@ -138,7 +156,6 @@ class DragTargetState extends State<DragTarget> {
         Padding(
           padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
           child: IconButton(
-            color: Color(0xFFff9800),
             iconSize: 40.0,
             onPressed: widget.uploadCallback,
             icon: const Icon(Icons.cancel),

@@ -36,19 +36,25 @@ dependencies:
   cupertino_icons: ^1.0.2
   realm: ^2.0.0
   supabase_flutter: ^2.0.0
-  sidebarx: ^0.16.2
+  sidebarx: ^0.17.1
   file_picker: ^8.0.0+1
   desktop_drop: ^0.4.4
-  langchain: ^0.4.2
-  langchain_openai: ^0.4.1
-  langchain_supabase: ^0.0.1+1
+  langchain: ^0.5.0+1
+  langchain_openai: ^0.5.0+1
+  langchain_supabase: ^0.1.0
   flutter_gpt_tokenizer: ^0.1.1
   collection: ^1.18.0
   font_awesome_flutter: ^10.7.0
   cross_file: ^0.3.3+8
   flutter_chat_ui: ^1.6.12
-  image_picker: ^0.8.4+4
+  image_picker: ^1.1.0
   open_filex: ^4.4.0
+  flutter_dotenv: ^5.1.0
+  hooks_riverpod: ^2.5.1
+  flutter_hooks: ^0.20.5
+  riverpod_annotation: ^2.3.5
+  json_annotation: ^4.8.1
+  langchain_community: ^0.1.0
 
 dev_dependencies:
   flutter_test:
@@ -59,7 +65,11 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  flutter_lints: ^3.0.2
+  riverpod_generator: ^2.4.0
+  build_runner: ^2.4.9
+  custom_lint: ^0.6.4
+  json_serializable: ^6.7.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -75,6 +85,9 @@ flutter:
   # assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
+
+assets:
+  - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

@@ -12,30 +12,37 @@ class ExampleSidebarX extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = Theme.of(context).primaryColor;
+    final canvasColor = Theme.of(context).canvasColor;
+    final scaffoldBackgroundColor = Theme.of(context).scaffoldBackgroundColor;
+    const accentCanvasColor = Color(0xFF3E3E61);
+    const white = Colors.white;
+    final actionColor = Theme.of(context).hoverColor;
+    final divider = Divider(color: white.withOpacity(0.3), height: 1);
     return SidebarX(
       controller: _controller,
       theme: SidebarXTheme(
         margin: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: canvasColor,
+         color: Theme.of(context).primaryColor,
           borderRadius: BorderRadius.circular(20),
         ),
-        hoverColor: scaffoldBackgroundColor,
-        textStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
-        selectedTextStyle: const TextStyle(color: Colors.white),
+       hoverColor: scaffoldBackgroundColor,
+       textStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
+        selectedTextStyle: const TextStyle(color: white),
         itemTextPadding: const EdgeInsets.only(left: 30),
         selectedItemTextPadding: const EdgeInsets.only(left: 30),
         itemDecoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: canvasColor),
+        border: Border.all(color: Theme.of(context).primaryColor),
         ),
         selectedItemDecoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
             color: actionColor.withOpacity(0.37),
           ),
-          gradient: const LinearGradient(
-            colors: [accentCanvasColor, canvasColor],
+          gradient: LinearGradient(
+            colors: [primaryColor, actionColor],
           ),
           boxShadow: [
             BoxShadow(
@@ -49,17 +56,17 @@ class ExampleSidebarX extends StatelessWidget {
           size: 20,
         ),
         selectedIconTheme: const IconThemeData(
-          color: Colors.white,
+         color: Colors.white,
           size: 20,
         ),
       ),
-      extendedTheme: const SidebarXTheme(
+      extendedTheme: SidebarXTheme(
         width: 200,
         decoration: BoxDecoration(
-          color: canvasColor,
+          color: Theme.of(context).primaryColor,
         ),
       ),
-      footerDivider: divider,
+     // footerDivider: divider,
       headerBuilder: (context, extended) {
         return SizedBox(
           height: 100,
@@ -98,10 +105,4 @@ class ExampleSidebarX extends StatelessWidget {
   }
 }
 
-const primaryColor = Colors.blueGrey;
-const canvasColor = Color(0xFF607D8B);
-const scaffoldBackgroundColor = Color(0xFF464667);
-const accentCanvasColor = Color(0xFF3E3E61);
-const white = Colors.white;
-final actionColor = const Color(0xFF5F5FA7).withOpacity(0.6);
-final divider = Divider(color: white.withOpacity(0.3), height: 1);
+

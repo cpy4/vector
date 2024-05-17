@@ -1,38 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:vector/db.dart';
 import 'package:vector/home.dart';
-import 'themes.dart' as themes;
+import 'theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 //part 'main.g.dart';
 
 void main() async {
-
   await dotenv.load(fileName: ".env");
   final supabaseURL = dotenv.env['SUPABASE_OPS_URL'].toString();
   final supabaseKey = dotenv.env['SUPABASE_OPS_KEY'].toString();
 
-
-
   //print (supabaseURL);
- // print (supabaseKey);
+  // print (supabaseKey);
   WidgetsFlutterBinding.ensureInitialized();
 
   await Supabase.initialize(
     url: supabaseURL,
-    anonKey:supabaseKey,
+    anonKey: supabaseKey,
   );
 
-  runApp(ProviderScope(child: MyApp()));
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
- /* Future<String> getSecret(secretName) async {
+  /* Future<String> getSecret(secretName) async {
     var res = await supabase
         .schema('vault')
         .from('decrypted_secrets')
@@ -49,17 +44,25 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-   //final row = getRows();
+    //final row = getRows();
     //final openAIKey = '14';//getSecret('OpenAPIKey');
     //print(openAIKey);
+    TextTheme textTheme = const TextTheme(
+      displayLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+      bodyLarge: TextStyle(fontSize: 18, color: Colors.black87),
+    );
+    TextTheme darkTextTheme = const TextTheme(
+      displayLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+      bodyLarge: TextStyle(fontSize: 18, color: Colors.white70),
+    );
+    ThemeData lightTheme = MaterialTheme(textTheme).light();
+    ThemeData darkTheme = MaterialTheme(darkTextTheme).dark();
     return MaterialApp(
       title: 'Vector.ai',
-      home: HomePage(),
-      theme: themes.lightTheme,
-      darkTheme: themes.darkTheme,
+      home: const HomePage(),
+      theme: lightTheme,
+      darkTheme: darkTheme,
       themeMode: ThemeMode.light,
     );
   }
 }
-
-

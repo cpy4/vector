@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:sidebarx/sidebarx.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'dart:math' as math;
@@ -12,11 +11,11 @@ import 'package:vector/db.dart';
 class DocsScreen extends ConsumerStatefulWidget {
   final void Function() callback;
   //final SupabaseClient supabase;
-  DocsScreen({
-    Key? key,
+  const DocsScreen({
+    super.key,
     required this.controller,
     required this.callback,
-  }) : super(key: key);
+  });
 
   final SidebarXController controller;
 
@@ -29,7 +28,8 @@ class _DocsScreenState extends ConsumerState<DocsScreen> {
   List<File>? files;
 
   Future<void> _onUploadPressed() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true);
+    FilePickerResult? result =
+        await FilePicker.platform.pickFiles(allowMultiple: true);
     if (result != null) {
       files = result.paths.map((path) => File(path!)).toList();
     } else {
@@ -41,78 +41,96 @@ class _DocsScreenState extends ConsumerState<DocsScreen> {
 
   @override
   Widget build(BuildContext context) {
-   //final supabaseClient = supabase;
+    //final supabaseClient = supabase;
     final future = ref.watch(docsProvider.future);
     final theme = Theme.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        AnimatedBuilder(
-          animation: widget.controller,
-          builder: (context, child) {
-            return FutureBuilder(
-              future: future,
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                final documents = snapshot.data!;
-                return Expanded(
-                  child: GridView.builder(
-                    gridDelegate: CustomGridDelegate(dimension: 180.0),
-                    // Try uncommenting some of these properties to see the effect on the grid:
-                    // itemCount: 20, // The default is that the number of grid tiles is infinite.
-                    // scrollDirection: Axis.horizontal, // The default is vertical.
-                    // reverse: true, // The default is false, going down (or left to right).
-                    itemCount: documents.length,
-                    itemBuilder: ((context, index) {
-                      final math.Random random = math.Random(index);
-                      final doc = documents[index];
-                      return GridTile(
-                        footer: Text('hey'),
-                        child: Container(
-                          margin: const EdgeInsets.all(12.0),
-                          decoration: ShapeDecoration(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                            ),
-                            gradient: RadialGradient(
-                              colors: <Color>[Theme.of(context).scaffoldBackgroundColor, Theme.of(context).primaryColor],
-                            ),
-                          ),
-                          child: const Center(
-                              child: FaIcon(
-                            FontAwesomeIcons.solidFileLines,
-                            size: 120,
+    return Padding(
+      padding: const EdgeInsets.all(40.0),
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        constraints: const BoxConstraints.expand(width: 10000, height: 800),
+        decoration: BoxDecoration(
+          color: theme.canvasColor,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AnimatedBuilder(
+              animation: widget.controller,
+              builder: (context, child) {
+                return FutureBuilder(
+                  future: future,
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    final documents = snapshot.data!;
+                    return Expanded(
+                      child: GridView.builder(
+                        gridDelegate: CustomGridDelegate(dimension: 180.0),
+                        // Try uncommenting some of these properties to see the effect on the grid:
+                        // itemCount: 20, // The default is that the number of grid tiles is infinite.
+                        // scrollDirection: Axis.horizontal, // The default is vertical.
+                        // reverse: true, // The default is false, going down (or left to right).
+                        itemCount: documents.length,
+                        itemBuilder: ((context, index) {
+                          final math.Random random = math.Random(index);
+                          final doc = documents[index];
+                          return GridTile(
+                              footer: const Text('hey'),
+                              child: Card(
+                                color: theme.cardColor,
+                              ) /*Container(
+                              margin: const EdgeInsets.all(12.0),
+                              decoration: ShapeDecoration(
+                                color: theme.cardColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                ),
+                                /*gradient: RadialGradient(
+                                  colors: <Color>[
+                                    Theme.of(context).scaffoldBackgroundColor,
+                                    Theme.of(context).primaryColor
+                                  ],
+                                ), */
+                              ),
+                              child: const Center(
+                                  child: FaIcon(
+                                FontAwesomeIcons.solidFileLines,
+                                size: 120,
                                 color: Colors.white,
-                          )),
-                        ),
-                        //Text(country['name']),
-                      );
-                    }),
-                  ),
+                              )),
+                            ), */
+                              //Text(country['name']),
+                              );
+                        }),
+                      ),
+                    );
+                  },
                 );
               },
-            );
-          },
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 20.0),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(200, 40),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  textStyle: theme.textTheme.labelLarge,
+                ),
+                onPressed: widget.callback,
+                child: const Icon(
+                  Icons.add,
+                  size: 40,
+                ),
+              ),
+            )
+          ],
         ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 20.0),
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              minimumSize: const Size(200, 40),
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              textStyle: theme.textTheme.labelLarge,
-            ),
-            onPressed: widget.callback,
-            child: const Icon(
-              Icons.add,
-              size: 40,
-            ),
-          ),
-        )
-      ],
+      ),
     );
   }
 }
@@ -157,7 +175,8 @@ class CustomGridDelegate extends SliverGridDelegate {
     final double squareDimension = constraints.crossAxisExtent / count;
     return CustomGridLayout(
       crossAxisCount: count,
-      fullRowPeriod: 3, // Number of rows per block (one of which is the full row).
+      fullRowPeriod:
+          3, // Number of rows per block (one of which is the full row).
       dimension: squareDimension,
     );
   }
@@ -195,7 +214,8 @@ class CustomGridLayout extends SliverGridLayout {
     if (childCount == 0 || dimension == 0) {
       return 0;
     }
-    return (childCount ~/ loopLength) * loopHeight + ((childCount % loopLength) ~/ crossAxisCount) * dimension;
+    return (childCount ~/ loopLength) * loopHeight +
+        ((childCount % loopLength) ~/ crossAxisCount) * dimension;
   }
 
   @override

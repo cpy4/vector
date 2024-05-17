@@ -1,21 +1,23 @@
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:flutter/material.dart';
 import 'package:cross_file/cross_file.dart';
+import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:langchain/langchain.dart';
 import 'package:langchain_openai/langchain_openai.dart';
 import 'package:langchain_supabase/langchain_supabase.dart' as sbv;
 import 'package:flutter_gpt_tokenizer/flutter_gpt_tokenizer.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vector/chat.dart';
 import 'package:vector/db.dart';
 import 'package:langchain_community/langchain_community.dart';
 
 class DragTarget extends ConsumerStatefulWidget {
   final void Function() uploadCallback;
   const DragTarget({
-    Key? key,
+    super.key,
     required this.uploadCallback,
-  }) : super(key: key);
+  });
 
   @override
   DragTargetState createState() => DragTargetState();
@@ -30,11 +32,12 @@ class DragTargetState extends ConsumerState<DragTarget> {
     final int tokenCount = await Tokenizer().count(text, modelName: 'gpt-4-*');
     return tokenCount;
   }
-  String supabaseURL;
-  String supabaseKey;
+
   void uploadCallbackFunc() {
     widget.uploadCallback();
   }
+
+  /*
 Future<Map?> getCredsMap() async {
   final supabaseCreds = await ref.watch(supabaseCredsProvider);
   final map = await supabaseCreds.when(
@@ -46,11 +49,35 @@ Future<Map?> getCredsMap() async {
   );
   return map;
 }
-
+*/
   @override
   Widget build(BuildContext context) {
-   final openAIKey = ref.watch(secretProvider('OpenAIKey')).toString();
-   final supabaseCreds = ref.watch(supabaseCredsProvider);
+    String openAIKey;
+    ChatOpenAI llm;
+    OpenAIEmbeddings embeddings;
+    vectorStore;
+
+    final openAIKeyProvider = ref.watch(secretProvider('ElegenceOpenAIKey'));
+    final supabaseCreds = ref.watch(supabaseCredsProvider);
+
+    if (openAIKeyProvider.isLoading) {
+      print('provider loading...');
+    } else if (openAIKeyProvider.hasError) {
+      print(error);
+    } else {
+      openAIKey = openAIKeyProvider.value.toString();
+      print(openAIKey);
+      llm = ChatOpenAI(apiKey: openAIKey);
+      embeddings = OpenAIEmbeddings(apiKey: openAIKey);
+      final vectorStore = sbv.Supabase(
+        tableName: 'documents_vecs',
+        embeddings: embeddings,
+        supabaseUrl: supabaseCreds.valueOrNull.toString(),
+        supabaseKey:
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRwdXJjc2FlaHpvaG5wcGp6bHh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTE0OTkwNDIsImV4cCI6MjAyNzA3NTA0Mn0.MdwLosdYtk6ggKbDI2el0OwZr46A3RAiDdljkE0ZXfk',
+      );
+    }
+
     /*final map = supabaseCreds.when(
       data: (supabaseCreds) {
        return supabaseCreds;
@@ -59,19 +86,10 @@ Future<Map?> getCredsMap() async {
       error: (error, stackTrace){}
     ); */
     //String supabaseURL = supabaseCreds.valueOrNull.toString();
-  // String supabaseKey = map!['key'];
-   //print(supabaseKey);
-   print(supabaseURL);
-    final llm = ChatOpenAI(apiKey: openAIKey);
-    final embeddings = OpenAIEmbeddings(apiKey: openAIKey);
+    // String supabaseKey = map!['key'];
 
-    final vectorStore = sbv.Supabase(
-      tableName: 'documents_vecs',
-      embeddings: embeddings,
-      supabaseUrl: 'https://dpurcsaehzohnppjzlxz.supabase.co',
-      supabaseKey:
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRwdXJjc2FlaHpvaG5wcGp6bHh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTE0OTkwNDIsImV4cCI6MjAyNzA3NTA0Mn0.MdwLosdYtk6ggKbDI2el0OwZr46A3RAiDdljkE0ZXfk',
-    );
+    // final llm = ChatOpenAI(apiKey: openAIKey);
+    // final embeddings = OpenAIEmbeddings(apiKey: openAIKey.valueOrNull.toString());
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -131,8 +149,8 @@ Future<Map?> getCredsMap() async {
           child: Container(
             height: 200,
             width: 200,
-            decoration: ShapeDecoration(
-              shape: const CircleBorder(),
+            decoration: const ShapeDecoration(
+              shape: CircleBorder(),
             ),
             //color: _dragging ? Colors.blue.withOpacity(0.4) : Colors.black26,
             child: Stack(

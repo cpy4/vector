@@ -1,20 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:sidebarx/sidebarx.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:vector/main.dart';
 import 'sidebar.dart';
 import 'documents.dart';
 import 'filedrop.dart' as filedrop;
 import 'chat.dart' as chatScreen;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
 
 class HomePage extends ConsumerStatefulWidget {
   //final SupabaseClient supabaseClient;
   //final llm;
-  const HomePage({
-    super.key});
+  const HomePage({super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _HomePageState();
@@ -23,7 +18,6 @@ class HomePage extends ConsumerStatefulWidget {
 // Notice how instead of "State", we are extending "ConsumerState".
 // This uses the same principle as "ConsumerWidget" vs "StatelessWidget".
 class _HomePageState extends ConsumerState<HomePage> {
-
   final _controller = SidebarXController(selectedIndex: 0, extended: true);
   bool upload = false;
 //ref.watch()
@@ -37,14 +31,12 @@ class _HomePageState extends ConsumerState<HomePage> {
     setState(() {
       upload = false;
     });
-    print('I did it!');
   }
 
   void uploadToTrue() {
     setState(() {
       upload = true;
     });
-    print('I did it!!!');
   }
 
   @override
@@ -73,7 +65,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           ),
         ),
       ),*/
-     // backgroundColor: Color(0xFFF5F5F5),
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -92,9 +84,9 @@ class _HomePageState extends ConsumerState<HomePage> {
                       return upload
                           ? filedrop.DragTarget(uploadCallback: uploadToFalse)
                           : DocsScreen(
-                        controller: _controller,
-                        callback: uploadToTrue,
-                      );
+                              controller: _controller,
+                              callback: uploadToTrue,
+                            );
                     case 1:
                       return const chatScreen.ChatScreen();
                     default:

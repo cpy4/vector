@@ -3,16 +3,15 @@ import 'package:sidebarx/sidebarx.dart';
 
 class ExampleSidebarX extends StatelessWidget {
   const ExampleSidebarX({
-    Key? key,
+    super.key,
     required SidebarXController controller,
-  })  : _controller = controller,
-        super(key: key);
+  }) : _controller = controller;
 
   final SidebarXController _controller;
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = Theme.of(context).primaryColor;
+    final primaryColor = Theme.of(context).canvasColor;
     final canvasColor = Theme.of(context).canvasColor;
     final scaffoldBackgroundColor = Theme.of(context).scaffoldBackgroundColor;
     const accentCanvasColor = Color(0xFF3E3E61);
@@ -24,17 +23,17 @@ class ExampleSidebarX extends StatelessWidget {
       theme: SidebarXTheme(
         margin: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-         color: Theme.of(context).primaryColor,
+          color: Theme.of(context).canvasColor,
           borderRadius: BorderRadius.circular(20),
         ),
-       hoverColor: scaffoldBackgroundColor,
-       textStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
+        hoverColor: scaffoldBackgroundColor,
+        //textStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
         selectedTextStyle: const TextStyle(color: white),
         itemTextPadding: const EdgeInsets.only(left: 30),
         selectedItemTextPadding: const EdgeInsets.only(left: 30),
         itemDecoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Theme.of(context).primaryColor),
+          border: Border.all(color: Theme.of(context).primaryColor),
         ),
         selectedItemDecoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
@@ -56,23 +55,23 @@ class ExampleSidebarX extends StatelessWidget {
           size: 20,
         ),
         selectedIconTheme: const IconThemeData(
-         color: Colors.white,
+          color: Colors.white,
           size: 20,
         ),
       ),
       extendedTheme: SidebarXTheme(
         width: 200,
         decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor,
+          color: Theme.of(context).scaffoldBackgroundColor,
         ),
       ),
-     // footerDivider: divider,
+      // footerDivider: divider,
       headerBuilder: (context, extended) {
-        return SizedBox(
+        return const SizedBox(
           height: 100,
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: const Icon(Icons.add_card_sharp),
+            padding: EdgeInsets.all(16.0),
+            child: Icon(Icons.add_card_sharp),
           ),
         );
       },
@@ -104,5 +103,3 @@ class ExampleSidebarX extends StatelessWidget {
     );
   }
 }
-
-

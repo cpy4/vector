@@ -3,6 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:vector/home.dart';
 import 'theme.dart';
+import 'util.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 //part 'main.g.dart';
@@ -47,22 +48,14 @@ class MyApp extends StatelessWidget {
     //final row = getRows();
     //final openAIKey = '14';//getSecret('OpenAPIKey');
     //print(openAIKey);
-    TextTheme textTheme = const TextTheme(
-      displayLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-      bodyLarge: TextStyle(fontSize: 18, color: Colors.black87),
-    );
-    TextTheme darkTextTheme = const TextTheme(
-      displayLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-      bodyLarge: TextStyle(fontSize: 18, color: Colors.white70),
-    );
-    ThemeData lightTheme = MaterialTheme(textTheme).light();
-    ThemeData darkTheme = MaterialTheme(darkTextTheme).dark();
+    final brightness = View.of(context).platformDispatcher.platformBrightness;
+    TextTheme textTheme = createTextTheme(context, "Mukta Vaani", "Rubik");
+    MaterialTheme theme = MaterialTheme(textTheme);
+    //ThemeData lightTheme = MaterialTheme(textTheme).light();
+    //ThemeData darkTheme = MaterialTheme(textTheme).dark();
     return MaterialApp(
-      title: 'Vector.ai',
-      home: const HomePage(),
-      theme: lightTheme,
-      darkTheme: darkTheme,
-      themeMode: ThemeMode.light,
-    );
+        title: 'Vector.ai',
+        home: const HomePage(),
+        theme: brightness == Brightness.light ? theme.light() : theme.dark());
   }
 }

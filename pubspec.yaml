@@ -60,6 +60,7 @@ dependencies:
   flutter_chat_types: any
   http: any
   path_provider: any
+  google_fonts: ^6.2.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

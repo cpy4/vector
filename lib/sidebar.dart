@@ -11,10 +11,10 @@ class ExampleSidebarX extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = Theme.of(context).canvasColor;
+    final primaryColor = Theme.of(context).colorScheme.inversePrimary;
     final canvasColor = Theme.of(context).canvasColor;
     final scaffoldBackgroundColor = Theme.of(context).scaffoldBackgroundColor;
-    const accentCanvasColor = Color(0xFF3E3E61);
+    final accentCanvasColor = Theme.of(context).colorScheme.tertiary;
     const white = Colors.white;
     final actionColor = Theme.of(context).hoverColor;
     final divider = Divider(color: white.withOpacity(0.3), height: 1);
@@ -26,14 +26,14 @@ class ExampleSidebarX extends StatelessWidget {
           color: Theme.of(context).canvasColor,
           borderRadius: BorderRadius.circular(20),
         ),
-        hoverColor: scaffoldBackgroundColor,
+        hoverColor: primaryColor,
         //textStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
         selectedTextStyle: const TextStyle(color: white),
         itemTextPadding: const EdgeInsets.only(left: 30),
         selectedItemTextPadding: const EdgeInsets.only(left: 30),
         itemDecoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: Theme.of(context).primaryColor),
+          border: Border.all(color: primaryColor),
         ),
         selectedItemDecoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
@@ -41,7 +41,7 @@ class ExampleSidebarX extends StatelessWidget {
             color: actionColor.withOpacity(0.37),
           ),
           gradient: LinearGradient(
-            colors: [primaryColor, actionColor],
+            colors: [scaffoldBackgroundColor, primaryColor],
           ),
           boxShadow: [
             BoxShadow(
@@ -67,12 +67,17 @@ class ExampleSidebarX extends StatelessWidget {
       ),
       // footerDivider: divider,
       headerBuilder: (context, extended) {
-        return const SizedBox(
+        return SizedBox(
           height: 100,
           child: Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Icon(Icons.add_card_sharp),
-          ),
+              padding: EdgeInsets.all(16.0),
+              child: Text(
+                'Vector.ai',
+                style: TextStyle(
+                  fontFamily: 'Exo',
+                  // fontStyle: 'bold',
+                ),
+              )),
         );
       },
       items: [

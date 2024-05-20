@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'dart:math' as math;
 import 'package:flutter/rendering.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vector/db.dart';
 
@@ -28,8 +27,7 @@ class _DocsScreenState extends ConsumerState<DocsScreen> {
   List<File>? files;
 
   Future<void> _onUploadPressed() async {
-    FilePickerResult? result =
-        await FilePicker.platform.pickFiles(allowMultiple: true);
+    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true);
     if (result != null) {
       files = result.paths.map((path) => File(path!)).toList();
     } else {
@@ -50,7 +48,7 @@ class _DocsScreenState extends ConsumerState<DocsScreen> {
         padding: const EdgeInsets.all(20),
         constraints: const BoxConstraints.expand(width: 10000, height: 800),
         decoration: BoxDecoration(
-          color: theme.canvasColor,
+          color: theme.colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Column(
@@ -79,7 +77,17 @@ class _DocsScreenState extends ConsumerState<DocsScreen> {
                           final math.Random random = math.Random(index);
                           final doc = documents[index];
                           return GridTile(
-                              footer: const Text('hey'),
+                              footer: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: GridTileBar(
+                                    title: Center(
+                                      child: Text(
+                                        doc['name'],
+                                        style: Theme.of(context).textTheme.bodyMedium,
+                                      ),
+                                    ),
+                                    backgroundColor: theme.cardColor),
+                              ),
                               child: Card(
                                 color: theme.cardColor,
                               ) /*Container(
@@ -117,12 +125,13 @@ class _DocsScreenState extends ConsumerState<DocsScreen> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(200, 40),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   textStyle: theme.textTheme.labelLarge,
+                  backgroundColor: theme.primaryColor,
                 ),
                 onPressed: widget.callback,
-                child: const Icon(
+                child: Icon(
+                  color: theme.colorScheme.onPrimary,
                   Icons.add,
                   size: 40,
                 ),
@@ -175,8 +184,7 @@ class CustomGridDelegate extends SliverGridDelegate {
     final double squareDimension = constraints.crossAxisExtent / count;
     return CustomGridLayout(
       crossAxisCount: count,
-      fullRowPeriod:
-          3, // Number of rows per block (one of which is the full row).
+      fullRowPeriod: 3, // Number of rows per block (one of which is the full row).
       dimension: squareDimension,
     );
   }
@@ -214,8 +222,7 @@ class CustomGridLayout extends SliverGridLayout {
     if (childCount == 0 || dimension == 0) {
       return 0;
     }
-    return (childCount ~/ loopLength) * loopHeight +
-        ((childCount % loopLength) ~/ crossAxisCount) * dimension;
+    return (childCount ~/ loopLength) * loopHeight + ((childCount % loopLength) ~/ crossAxisCount) * dimension;
   }
 
   @override

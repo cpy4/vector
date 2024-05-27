@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sidebarx/sidebarx.dart';
-import 'sidebar.dart';
+import 'widgets/sidebar.dart';
 import 'documents.dart';
 import 'filedrop.dart' as filedrop;
 import 'chat.dart' as chatScreen;

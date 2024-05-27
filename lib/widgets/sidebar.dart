@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:sidebarx/sidebarx.dart';
+import 'package:vector/widgets/toggle.dart';
+import 'dart:math' as math;
 
 class ExampleSidebarX extends StatelessWidget {
   const ExampleSidebarX({
@@ -71,13 +74,29 @@ class ExampleSidebarX extends StatelessWidget {
           height: 100,
           child: Padding(
               padding: EdgeInsets.all(16.0),
-              child: Text(
-                'Vector.ai',
-                style: TextStyle(
-                  fontFamily: 'Exo',
-                  // fontStyle: 'bold',
-                ),
-              )),
+              child: Text('Vector.ai',
+                  style: TextStyle(
+                    fontFamily: GoogleFonts.exo().fontFamily,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30.0,
+                  ))),
+        );
+      },
+      footerBuilder: (context, extended) {
+        return Padding(
+          padding: EdgeInsets.fromLTRB(16, 16, 16, 40),
+          child: Transform.rotate(
+            angle: extended ? 0 : 90 * math.pi / 180,
+            child: Container(
+              height: 50,
+              width: 200,
+              decoration: BoxDecoration(
+                color: primaryColor,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: ToggleSwitch(),
+            ),
+          ),
         );
       },
       items: [
@@ -99,11 +118,7 @@ class ExampleSidebarX extends StatelessWidget {
         const SidebarXItem(
           icon: Icons.favorite,
           label: 'Favorites',
-        ),
-        const SidebarXItem(
-          iconWidget: FlutterLogo(size: 20),
-          label: 'Flutter',
-        ),
+        )
       ],
     );
   }

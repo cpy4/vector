@@ -6,6 +6,7 @@ import 'dart:math' as math;
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vector/db.dart';
+import 'package:vector/widgets/toggle.dart';
 
 class DocsScreen extends ConsumerStatefulWidget {
   final void Function() callback;
@@ -27,7 +28,8 @@ class _DocsScreenState extends ConsumerState<DocsScreen> {
   List<File>? files;
 
   Future<void> _onUploadPressed() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true);
+    FilePickerResult? result =
+        await FilePicker.platform.pickFiles(allowMultiple: true);
     if (result != null) {
       files = result.paths.map((path) => File(path!)).toList();
     } else {
@@ -43,10 +45,10 @@ class _DocsScreenState extends ConsumerState<DocsScreen> {
     final future = ref.watch(docsProvider.future);
     final theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.all(40.0),
+      padding: const EdgeInsets.fromLTRB(40, 40, 40, 40),
       child: Container(
         padding: const EdgeInsets.all(20),
-        constraints: const BoxConstraints.expand(width: 10000, height: 800),
+        constraints: const BoxConstraints.expand(width: 10000, height: 1000),
         decoration: BoxDecoration(
           color: theme.colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(20),
@@ -55,6 +57,7 @@ class _DocsScreenState extends ConsumerState<DocsScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            ToggleSwitch(),
             AnimatedBuilder(
               animation: widget.controller,
               builder: (context, child) {
@@ -83,7 +86,9 @@ class _DocsScreenState extends ConsumerState<DocsScreen> {
                                     title: Center(
                                       child: Text(
                                         doc['name'],
-                                        style: Theme.of(context).textTheme.bodyMedium,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium,
                                       ),
                                     ),
                                     backgroundColor: theme.cardColor),
@@ -125,13 +130,14 @@ class _DocsScreenState extends ConsumerState<DocsScreen> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(200, 40),
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   textStyle: theme.textTheme.labelLarge,
-                  backgroundColor: theme.primaryColor,
+                  backgroundColor: theme.colorScheme.inversePrimary,
                 ),
                 onPressed: widget.callback,
                 child: Icon(
-                  color: theme.colorScheme.onPrimary,
+                  color: theme.colorScheme.onSurface,
                   Icons.add,
                   size: 40,
                 ),
@@ -184,7 +190,8 @@ class CustomGridDelegate extends SliverGridDelegate {
     final double squareDimension = constraints.crossAxisExtent / count;
     return CustomGridLayout(
       crossAxisCount: count,
-      fullRowPeriod: 3, // Number of rows per block (one of which is the full row).
+      fullRowPeriod:
+          3, // Number of rows per block (one of which is the full row).
       dimension: squareDimension,
     );
   }
@@ -222,7 +229,8 @@ class CustomGridLayout extends SliverGridLayout {
     if (childCount == 0 || dimension == 0) {
       return 0;
     }
-    return (childCount ~/ loopLength) * loopHeight + ((childCount % loopLength) ~/ crossAxisCount) * dimension;
+    return (childCount ~/ loopLength) * loopHeight +
+        ((childCount % loopLength) ~/ crossAxisCount) * dimension;
   }
 
   @override

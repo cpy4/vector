@@ -13,9 +13,13 @@ import 'package:path_provider/path_provider.dart';
 import 'package:langchain_supabase/langchain_supabase.dart' as sbv;
 import 'package:langchain_openai/langchain_openai.dart';
 
-final llm = ChatOpenAI(apiKey: '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');
+final llm = ChatOpenAI(
+  apiKey: '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',
+  defaultOptions: ChatOpenAIOptions(model: 'gpt-4o'),
+);
 
-final embeddings = OpenAIEmbeddings(apiKey: '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');
+final embeddings = OpenAIEmbeddings(
+    apiKey: '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');
 
 final qaChain = OpenAIQAWithSourcesChain(llm: llm);
 final docPrompt = PromptTemplate.fromTemplate(
@@ -26,7 +30,7 @@ final vectorStore = sbv.Supabase(
   embeddings: embeddings,
   supabaseUrl: 'https://dpurcsaehzohnppjzlxz.supabase.co',
   supabaseKey:
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRwdXJjc2FlaHpvaG5wcGp6bHh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTE0OTkwNDIsImV4cCI6MjAyNzA3NTA0Mn0.MdwLosdYtk6ggKbDI2el0OwZr46A3RAiDdljkE0ZXfk',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRwdXJjc2FlaHpvaG5wcGp6bHh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTE0OTkwNDIsImV4cCI6MjAyNzA3NTA0Mn0.MdwLosdYtk6ggKbDI2el0OwZr46A3RAiDdljkE0ZXfk',
 );
 
 final finalQAChain = StuffDocumentsChain(
@@ -58,16 +62,33 @@ class _ChatScreenState extends State<ChatScreen> {
   final _user = const types.User(id: '82091008-a484-4a89-ae75-a22bf8d6f3ac');
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        body: Chat(
-          messages: _messages,
-          onAttachmentPressed: _handleAttachmentPressed,
-          onMessageTap: _handleMessageTap,
-          onPreviewDataFetched: _handlePreviewDataFetched,
-          onSendPressed: _handleSendPressed,
-          user: _user,
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(40.0),
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          constraints: const BoxConstraints.expand(width: 10000, height: 1000),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surfaceContainerHighest,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Chat(
+            messages: _messages,
+            onAttachmentPressed: _handleAttachmentPressed,
+            onMessageTap: _handleMessageTap,
+            onPreviewDataFetched: _handlePreviewDataFetched,
+            onSendPressed: _handleSendPressed,
+            user: _user,
+            theme: DefaultChatTheme(
+              backgroundColor: theme.colorScheme.surfaceContainerHighest,
+            ),
+          ),
         ),
-      );
+      ),
+    );
+  }
 
   void _addMessage(types.Message message) {
     setState(() {
@@ -169,8 +190,10 @@ class _ChatScreenState extends State<ChatScreen> {
 
       if (message.uri.startsWith('http')) {
         try {
-          final index = _messages.indexWhere((element) => element.id == message.id);
-          final updatedMessage = (_messages[index] as types.FileMessage).copyWith(
+          final index =
+              _messages.indexWhere((element) => element.id == message.id);
+          final updatedMessage =
+              (_messages[index] as types.FileMessage).copyWith(
             isLoading: true,
           );
 
@@ -189,8 +212,10 @@ class _ChatScreenState extends State<ChatScreen> {
             await file.writeAsBytes(bytes);
           }
         } finally {
-          final index = _messages.indexWhere((element) => element.id == message.id);
-          final updatedMessage = (_messages[index] as types.FileMessage).copyWith(
+          final index =
+              _messages.indexWhere((element) => element.id == message.id);
+          final updatedMessage =
+              (_messages[index] as types.FileMessage).copyWith(
             isLoading: null,
           );
 
@@ -231,7 +256,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final query = textMessage.toString();
     final res = await retrievalQA(query);
 
-   /* final res = await vectorStore.similaritySearch(
+    /* final res = await vectorStore.similaritySearch(
       query: textMessage.toString(),
         config: const VectorStoreSimilaritySearch(k:1)
     );*/
@@ -241,7 +266,7 @@ class _ChatScreenState extends State<ChatScreen> {
       author: const types.User(id: 'LLM'),
       createdAt: DateTime.now().millisecondsSinceEpoch,
       id: randomString(),
-      text: res['result'].toString(),));
-
+      text: res['result'].toString(),
+    ));
   }
 }

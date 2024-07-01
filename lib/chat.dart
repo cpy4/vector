@@ -18,12 +18,16 @@ final llm = ChatOpenAI(
   defaultOptions: ChatOpenAIOptions(model: 'gpt-4o'),
 );
 
-final embeddings = OpenAIEmbeddings(
-    apiKey: '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');
+final embeddings = OpenAIEmbeddings(apiKey: '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');
+
+final conversation = ConversationChain(
+  llm: llm,
+  memory: ConversationBufferMemory(),
+);
 
 final qaChain = OpenAIQAWithSourcesChain(llm: llm);
 final docPrompt = PromptTemplate.fromTemplate(
-  'Content: {page_content}\nSource: {source}',
+  'You are a helpful assistant. Please assist with user queries while never breaking character as their assistant. Priortize information in the documents provided in the content section. Always check these documents for information relevant to the user query before drawing on your other knowledge. If no information relevant to the query is found in the provided content, use the entirety of your knowledge base to assist the user to the best of your ability. Content: {page_content}\nSource: {source}',
 );
 final vectorStore = sbv.Supabase(
   tableName: 'documents_vecs',
@@ -190,10 +194,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
       if (message.uri.startsWith('http')) {
         try {
-          final index =
-              _messages.indexWhere((element) => element.id == message.id);
-          final updatedMessage =
-              (_messages[index] as types.FileMessage).copyWith(
+          final index = _messages.indexWhere((element) => element.id == message.id);
+          final updatedMessage = (_messages[index] as types.FileMessage).copyWith(
             isLoading: true,
           );
 
@@ -212,10 +214,8 @@ class _ChatScreenState extends State<ChatScreen> {
             await file.writeAsBytes(bytes);
           }
         } finally {
-          final index =
-              _messages.indexWhere((element) => element.id == message.id);
-          final updatedMessage =
-              (_messages[index] as types.FileMessage).copyWith(
+          final index = _messages.indexWhere((element) => element.id == message.id);
+          final updatedMessage = (_messages[index] as types.FileMessage).copyWith(
             isLoading: null,
           );
 
@@ -252,7 +252,7 @@ class _ChatScreenState extends State<ChatScreen> {
     );
 
     _addMessage(textMessage);
-
+    print(docPrompt.template);
     final query = textMessage.toString();
     final res = await retrievalQA(query);
 
@@ -262,6 +262,7 @@ class _ChatScreenState extends State<ChatScreen> {
     );*/
 
     print(res['result']);
+
     _addMessage(types.TextMessage(
       author: const types.User(id: 'LLM'),
       createdAt: DateTime.now().millisecondsSinceEpoch,

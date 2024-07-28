@@ -74,7 +74,7 @@ Future<Map?> getCredsMap() async {
         embeddings: embeddings,
         supabaseUrl: supabaseCreds.valueOrNull.toString(),
         supabaseKey:
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRwdXJjc2FlaHpvaG5wcGp6bHh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTE0OTkwNDIsImV4cCI6MjAyNzA3NTA0Mn0.MdwLosdYtk6ggKbDI2el0OwZr46A3RAiDdljkE0ZXfk',
+            '',
       );
     }
 

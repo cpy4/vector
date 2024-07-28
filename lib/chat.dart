@@ -14,11 +14,11 @@ import 'package:langchain_supabase/langchain_supabase.dart' as sbv;
 import 'package:langchain_openai/langchain_openai.dart';
 
 final llm = ChatOpenAI(
-  apiKey: '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',
+  apiKey: '',
   defaultOptions: ChatOpenAIOptions(model: 'gpt-4o'),
 );
 
-final embeddings = OpenAIEmbeddings(apiKey: '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');
+final embeddings = OpenAIEmbeddings(apiKey: '');
 
 final conversation = ConversationChain(
   llm: llm,
@@ -34,7 +34,7 @@ final vectorStore = sbv.Supabase(
   embeddings: embeddings,
   supabaseUrl: 'https://dpurcsaehzohnppjzlxz.supabase.co',
   supabaseKey:
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRwdXJjc2FlaHpvaG5wcGp6bHh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTE0OTkwNDIsImV4cCI6MjAyNzA3NTA0Mn0.MdwLosdYtk6ggKbDI2el0OwZr46A3RAiDdljkE0ZXfk',
+      '',
 );
 
 final finalQAChain = StuffDocumentsChain(
